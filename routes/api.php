@@ -15,14 +15,20 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+/**
+ * Get authenticated user.
+ *
+ * @hideFromAPIDocumentation
+ */
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
 Route::middleware('auth.accessKey')->prefix('patients')->group(function () {
-    Route::post('/', [PatientController::class, 'store']);
+    // Route::apiResource('patients', PatientController::class);
+    Route::post('', [PatientController::class, 'store']);
     Route::put('/{id}', [PatientController::class, 'update']);
     Route::delete('/{id}', [PatientController::class, 'destroy']);
-    Route::get('/', [PatientController::class, 'index']);
+    Route::get('', [PatientController::class, 'index']);
     Route::get('/{id}', [PatientController::class, 'show']);
 });

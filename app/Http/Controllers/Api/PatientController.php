@@ -9,6 +9,27 @@ use Illuminate\Http\Request;
 
 class PatientController extends Controller
 {
+    /**
+     * Create a new patient.
+     *
+     * @group Patients
+     * @header accessKey required Your API access key.
+     * 
+     * @bodyParam name string required The full name of the patient.
+     * @bodyParam id_type string required The type of ID (e.g. ktp, passport).
+     * @bodyParam id_no string required The identification number.
+     * @bodyParam gender string required Male or female.
+     * @bodyParam dob date required Date of birth in Y-m-d format. Example: 1990-01-01
+     * @bodyParam address string required Patient's address.
+     * @bodyParam medium_acquisition string required How the patient was acquired (e.g., online, referral).
+     *
+     * @response 201 {
+     *   "id": 1,
+     *   "user_id": 5,
+     *   "medium_acquisition": "referral",
+     *   ...
+     * }
+     */
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -40,6 +61,26 @@ class PatientController extends Controller
         return response()->json($patient->load('user'));
     }
 
+    /**
+     * Update an existing patient.
+     *
+     * @group Patients
+     * @urlParam id integer required The ID of the patient.
+     * @header accessKey required Your API access key.
+     *
+     * @bodyParam name string required The full name of the patient.
+     * @bodyParam id_type string required The type of ID.
+     * @bodyParam id_no string required The identification number.
+     * @bodyParam gender string required Male or female.
+     * @bodyParam dob date required Date of birth. Example: 1990-01-01
+     * @bodyParam address string required Patient's address.
+     * @bodyParam medium_acquisition string required Acquisition method.
+     *
+     * @response 200 {
+     *   "message": "Patient updated successfully",
+     *   ...
+     * }
+     */
     public function update(Request $request, $id)
     {
         $patient = Patient::findOrFail($id);
@@ -69,6 +110,15 @@ class PatientController extends Controller
         return response()->json($patient->load('user'));
     }
 
+    /**
+     * Delete a patient.
+     *
+     * @group Patients
+     * @urlParam id integer required The ID of the patient.
+     * @header accessKey required Your API access key.
+     *
+     * @response 204 {}
+     */
     public function destroy($id)
     {
         $patient = Patient::findOrFail($id);
@@ -78,11 +128,40 @@ class PatientController extends Controller
         return response()->json(['message' => 'Deleted']);
     }
 
+    /**
+     * Get a list of all patients.
+     *
+     * @group Patients
+     * @header accessKey required Your API access key.
+     *
+     * @response 200 [
+     *   {
+     *     "id": 1,
+     *     "user_id": 5,
+     *     "medium_acquisition": "referral",
+     *     ...
+     *   }
+     * ]
+     */
     public function index()
     {
         return response()->json(Patient::with('user')->get());
     }
 
+    /**
+     * Get details of a specific patient.
+     *
+     * @group Patients
+     * @urlParam id integer required The ID of the patient.
+     * @header accessKey required Your API access key.
+     *
+     * @response 200 {
+     *   "id": 1,
+     *   "user_id": 5,
+     *   "medium_acquisition": "referral",
+     *   ...
+     * }
+     */
     public function show($id)
     {
         $patient = Patient::with('user')->findOrFail($id);
